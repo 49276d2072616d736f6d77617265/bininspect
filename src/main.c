@@ -1,24 +1,50 @@
 #include <stdio.h>
 #include <string.h>
+
 #include "inspect.h"
+#include "json.h"
 
 static void print_usage(const char *prog) {
-    fprintf(stderr, "Usage: %s <file>\n", prog);
+    fprintf(stderr, "Usage: %s [--json] <file>\n", prog);
 }
 
 int main(int argc, char **argv) {
+    int json = 0;
+    const char *path = NULL;
+
     if (argc < 2) {
         print_usage(argv[0]);
         return 2;
     }
 
-    const char *path = argv[1];
+    // Accept either:
+    //   bininspect <file>
+    //   bininspect --json <file>
+    //   bininspect <file> --json
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--json") == 0) {
+            json = 1;
+        } else {
+            path = argv[i];
+        }
+    }
+
+    if (!path) {
+        print_usage(argv[0]);
+        return 2;
+    }
 
     InspectResult r;
     int rc = inspect_file(path, &r);
     if (rc != 0) {
         fprintf(stderr, "Error: failed to inspect file (code=%d)\n", rc);
         return 1;
+    }
+
+    if (json) {
+        json_print_inspect(stdout, &r);
+        inspect_result_free(&r);
+        return 0;
     }
 
     printf("path: %s\n", r.path);

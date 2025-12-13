@@ -7,6 +7,8 @@
 #include "hash_sha256.h"
 #include "entropy.h"
 
+#include "elf_parse.h"
+
 int inspect_file(const char *path, InspectResult *out) {
     if (!path || !out) return 10;
     memset(out, 0, sizeof(*out));
@@ -33,6 +35,11 @@ int inspect_file(const char *path, InspectResult *out) {
 
     // type detection
     magic_detect(fd.data, fd.size, out->type_str, (int)sizeof(out->type_str));
+
+    // ELF minimal parse (only if type says ELF)
+    if (strcmp(out->type_str, "ELF") == 0) {
+        (void)elf_parse_minimal(fd.data, fd.size, &out->elf);
+    }
 
     // sha256
     sha256_hash(fd.data, (size_t)fd.size, out->sha256);
