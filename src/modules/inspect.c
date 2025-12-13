@@ -41,6 +41,11 @@ int inspect_file(const char *path, InspectResult *out) {
         (void)elf_parse_minimal(fd.data, fd.size, &out->elf);
     }
 
+    if (strcmp(out->type_str, "PE") == 0) {
+        (void)pe_parse_minimal(fd.data, fd.size, &out->pe);
+    }
+
+
     // sha256
     sha256_hash(fd.data, (size_t)fd.size, out->sha256);
 

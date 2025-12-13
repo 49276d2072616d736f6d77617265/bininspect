@@ -52,5 +52,18 @@ void json_print_inspect(FILE *out, const InspectResult *r) {
         fprintf(out, "}");
     }
 
+    if (r->pe.present || r->pe.parse_rc != 0) {
+        fprintf(out, ",\"pe\":{");
+        fprintf(out, "\"present\":%d", r->pe.present);
+        fprintf(out, ",\"parse_rc\":%d", r->pe.parse_rc);
+        fprintf(out, ",\"machine\":%u", (unsigned)r->pe.machine);
+        fprintf(out, ",\"sections\":%u", (unsigned)r->pe.number_of_sections);
+        fprintf(out, ",\"entry_rva\":%u", (unsigned)r->pe.entry_rva);
+        fprintf(out, ",\"pe32plus\":%u", (unsigned)r->pe.is_pe32_plus);
+        fprintf(out, ",\"image_base\":%llu", (unsigned long long)r->pe.image_base);
+        fprintf(out, "}");
+    }
+
+
     fprintf(out, "}\n");
 }
