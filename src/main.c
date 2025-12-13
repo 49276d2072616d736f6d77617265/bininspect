@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <string.h>
+#include "inspect.h"
+
+static void print_usage(const char *prog) {
+    fprintf(stderr, "Usage: %s <file>\n", prog);
+}
+
+int main(int argc, char **argv) {
+    if (argc < 2) {
+        print_usage(argv[0]);
+        return 2;
+    }
+
+    const char *path = argv[1];
+
+    InspectResult r;
+    int rc = inspect_file(path, &r);
+    if (rc != 0) {
+        fprintf(stderr, "Error: failed to inspect file (code=%d)\n", rc);
+        return 1;
+    }
+
+    printf("path: %s\n", r.path);
+    printf("size: %llu bytes\n", (unsigned long long)r.size);
+    printf("type: %s\n", r.type_str);
+
+    printf("magic(16): ");
+    for (int i = 0; i < 16 && (unsigned long long)i < r.size; i++) {
+        printf("%02X", r.magic16[i]);
+        if (i != 15) printf(" ");
+    }
+    printf("\n");
+
+    printf("sha256: ");
+    for (int i = 0; i < 32; i++) printf("%02x", r.sha256[i]);
+    printf("\n");
+
+    printf("entropy: %.4f bits/byte\n", r.entropy);
+
+    inspect_result_free(&r);
+    return 0;
+}
