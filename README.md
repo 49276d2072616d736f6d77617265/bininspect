@@ -51,8 +51,6 @@ make
 
 ---
 
----
-
 # bininspect
 
 A cross-platform file inspection tool written in **pure C**.
