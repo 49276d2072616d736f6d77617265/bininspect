@@ -26,7 +26,7 @@ static void hex_bytes(FILE *out, const uint8_t *b, int n) {
     for (int i = 0; i < n; i++) fprintf(out, "%02x", b[i]);
 }
 
-void json_print_inspect(FILE *out, const InspectResult *r) {
+void json_print_inspect(FILE *out, const InspectResult *r, const StringsResult *sr) {
     fprintf(out, "{");
     fprintf(out, "\"path\":"); json_escape(out, r->path ? r->path : "");
     fprintf(out, ",\"size\":%llu", (unsigned long long)r->size);
@@ -41,7 +41,6 @@ void json_print_inspect(FILE *out, const InspectResult *r) {
     fprintf(out, ",\"sha256\":\""); hex_bytes(out, r->sha256, 32); fprintf(out, "\"");
     fprintf(out, ",\"entropy\":%.6f", r->entropy);
 
-    // ELF extras (se preenchidos)
     if (r->elf.present) {
         fprintf(out, ",\"elf\":{");
         fprintf(out, "\"class\":%u", (unsigned)r->elf.elf_class);
@@ -64,6 +63,18 @@ void json_print_inspect(FILE *out, const InspectResult *r) {
         fprintf(out, "}");
     }
 
+    if (sr && sr->count > 0) {
+        fprintf(out, ",\"strings\":[");
+        for (size_t i = 0; i < sr->count; i++) {
+            if (i) fprintf(out, ",");
+            fprintf(out, "{");
+            fprintf(out, "\"offset\":%llu", (unsigned long long)sr->hits[i].offset);
+            fprintf(out, ",\"value\":");
+            json_escape(out, sr->hits[i].value ? sr->hits[i].value : "");
+            fprintf(out, "}");
+        }
+        fprintf(out, "]");
+    }
 
     fprintf(out, "}\n");
 }

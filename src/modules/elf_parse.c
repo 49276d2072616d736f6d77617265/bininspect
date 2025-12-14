@@ -13,8 +13,8 @@ int elf_parse_minimal(const uint8_t *d, uint64_t n, ElfInfo *out) {
     // magic
     if (!(d[0]==0x7F && d[1]=='E' && d[2]=='L' && d[3]=='F')) return 2;
 
-    uint8_t cls = d[4];   // EI_CLASS
-    uint8_t data = d[5];  // EI_DATA
+    uint8_t cls  = d[4]; // EI_CLASS
+    uint8_t data = d[5]; // EI_DATA
     int be = (data == 2);
 
     out->present = 1;
@@ -22,14 +22,12 @@ int elf_parse_minimal(const uint8_t *d, uint64_t n, ElfInfo *out) {
     out->elf_data = data;
 
     if (cls == 1) {
-        // ELF32 header size at least 52 bytes
         if (n < 52) return 3;
         out->e_type    = rd16(d + 16, be);
         out->e_machine = rd16(d + 18, be);
         out->e_entry   = (uint64_t)rd32(d + 24, be);
         return 0;
     } else if (cls == 2) {
-        // ELF64 header size at least 64 bytes
         if (n < 64) return 4;
         out->e_type    = rd16(d + 16, be);
         out->e_machine = rd16(d + 18, be);
@@ -37,5 +35,5 @@ int elf_parse_minimal(const uint8_t *d, uint64_t n, ElfInfo *out) {
         return 0;
     }
 
-    return 5; // unknown class
+    return 5;
 }

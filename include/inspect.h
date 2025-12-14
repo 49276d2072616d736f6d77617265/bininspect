@@ -10,7 +10,6 @@ typedef struct ElfInfo {
     uint64_t e_entry;
 } ElfInfo;
 
-
 typedef struct PeInfo {
     int present;
     uint16_t machine;
@@ -18,7 +17,7 @@ typedef struct PeInfo {
     uint32_t entry_rva;
     uint8_t  is_pe32_plus;   // 0=PE32, 1=PE32+
     uint64_t image_base;     // 32-bit or 64-bit stored here
-    int parse_rc;
+    int parse_rc;            // 0=ok, nonzero=error code from parser
 } PeInfo;
 
 typedef struct InspectResult {
@@ -33,8 +32,6 @@ typedef struct InspectResult {
     ElfInfo elf;
     PeInfo pe;
 } InspectResult;
-
-
 
 int inspect_file(const char *path, InspectResult *out);
 void inspect_result_free(InspectResult *r);

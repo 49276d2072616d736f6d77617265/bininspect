@@ -15,7 +15,8 @@ SRCS := src/main.c \
 	src/modules/inspect.c  \
 	src/modules/json.c \
 	src/modules/elf_parse.c \
-	src/modules/pe_parse.c
+	src/modules/pe_parse.c \
+	src/modules/strings.c
 
 
 OBJS := $(SRCS:%.c=$(OBJDIR)/%.o)
