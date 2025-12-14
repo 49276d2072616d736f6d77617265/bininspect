@@ -12,9 +12,10 @@
 - 基本檔案類型識別（ELF、PE、PDF、ZIP、PNG、JPEG 等）
 - ELF 最小解析（class、endianness、machine、entry point）
 - PE 最小解析（machine、sections、entry RVA、image base、PE32/PE32+）
+- ASCII 字串擷取（`--strings`，僅限可列印字元）
 - SHA-256 雜湊計算（自行實作，無外部函式庫）
 - Shannon 熵值計算（可用於判斷壓縮或封裝檔案）
-- **JSON 輸出模式**（`--json`，可用於自動化工具鏈）
+- **JSON 輸出模式**（`--json`，自動包含 ELF / PE 與字串資訊，可用於自動化工具鏈）
 
 ---
 
@@ -26,8 +27,10 @@ make
 ## 使用方式
 
 ```bash
-./build/bininspect <file>        # 基本檔案檢測
-./build/bininspect <file> --json # JSON 輸出模式（包含 ELF / PE 資訊）
+./build/bininspect <file>                    # 基本檔案檢測
+./build/bininspect <file> --strings          # 以人類可讀格式輸出字串
+./build/bininspect <file> --strings --min-len 8  # 設定最小字串長度
+./build/bininspect <file> --json             # JSON 輸出（自動包含字串）
 ```
 
 ---
@@ -55,9 +58,10 @@ All parsing is performed manually at the byte level.
 * Basic file type detection (ELF, PE, PDF, ZIP, PNG, JPEG, etc.)
 * Minimal ELF parsing (class, endianness, machine, entry point)
 * Minimal PE parsing (machine, sections, entry RVA, image base, PE32/PE32+)
+* ASCII string extraction (`--strings`, printable characters only)
 * SHA-256 hashing (custom implementation, no external libraries)
 * Shannon entropy calculation (useful for detecting compression or packing)
-* **JSON output mode** (`--json`, including ELF / PE details)
+* **JSON output mode** (`--json`, automatically includes ELF / PE and strings)
 
 ---
 
@@ -70,8 +74,10 @@ make
 ## Usage
 
 ```bash
-./build/bininspect <file>        # Basic file inspection
-./build/bininspect <file> --json # JSON output (with ELF / PE information)
+./build/bininspect <file>                    # Basic file inspection
+./build/bininspect <file> --strings          # Human-readable strings output
+./build/bininspect <file> --strings --min-len 8
+./build/bininspect <file> --json             # JSON output (with strings)
 ```
 
 ---
